@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
 const NavBar = (props) => {
     const classes = useStyles(props);
     return(
@@ -39,7 +38,6 @@ const NavBar = (props) => {
                   topics
                 </Typography>
               </Grid>
-              
             </Grid>
           </Toolbar>
         </AppBar>

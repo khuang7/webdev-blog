@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import NavBar from './components/NavBar'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -20,10 +19,13 @@ const theme = createMuiTheme({
   },
 
   typography: {
-    fontFamily: [
-      'monospace'
-    ],
-    
+    MuiTableCell: {
+      fontSize: '10px'
+    }
+  },
+
+  overrides: {
+
   }
 });
 
