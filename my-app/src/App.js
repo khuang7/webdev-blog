@@ -19,6 +19,9 @@ const theme = createMuiTheme({
   },
 
   typography: {
+    root: {
+      fontFamily: 'monospace'
+    },
     MuiTableCell: {
       fontSize: '10px'
     }

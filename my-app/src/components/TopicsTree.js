@@ -21,9 +21,11 @@ const htmldata = {
       name: 'HTML Concept 2',
       title: 'label'
     },
-
+    
     {
-
+      id: '3',
+      name: 'HTML Concept 3',
+      title: 'label'
     },
   ],
 };
@@ -76,7 +78,7 @@ const useStyles = makeStyles({
       marginTop: '5em',
       marginLeft: 'auto',
       marginRight: 'auto',
-      color: 'white'
+      color: 'black'
     },
     content: {
         fontSize: '50px'

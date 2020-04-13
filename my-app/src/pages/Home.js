@@ -1,6 +1,7 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
 import { makeStyles, Typography, List, ListItem, ListItemText, Button } from '@material-ui/core/';
+import { Link } from 'react-router-dom';
 
 const data = {
   steps: ["1. learn web development",
@@ -36,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: '25px',
-
   },
 
   thePlan: {
@@ -68,7 +68,13 @@ const useStyles = makeStyles((theme) => ({
   },
 
   button: {
+    fontFamily: 'monospace',
     marginTop: '50px',
+    color: 'black',
+    borderColor: 'black',
+    marginRight: '5px',
+    marginLeft: '5px'
+
   }
 }));
 
@@ -91,9 +97,9 @@ export default function Home() {
                 </ListItem>
             </List>
 
-            <Button className={classes.button} variant="outlined">
+            <Link to="/topics" style={{ textDecoration: 'none' }}><Button className={classes.button} variant="outlined">
             View Topics
-            </Button>
+            </Button></Link>
             <Button className={classes.button} variant="outlined">
             View Resources
             </Button>

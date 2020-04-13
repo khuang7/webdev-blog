@@ -8,7 +8,7 @@ import TopicsTree from '../components/TopicsTree'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      backgroundColor: '#3C4142',
+      backgroundColor: '#EFEFEF',
       minHeight: '100vh'
     },
 
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '15px',
         lineHeight: '20px',
         paddingTop: '2em',
-        color: 'white'
+        color: 'black'
       }, 
       table : {
           paddingTop: '5%',
@@ -53,4 +53,3 @@ export default function Topics() {
         </div>
     )
 }
-

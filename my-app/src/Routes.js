@@ -10,7 +10,7 @@ const Routes = () => (
       <Route exact path='/' component={Home}></Route>
       <Route exact path='/topics' component={Topics}></Route>
       <Route exact path='/resources' component={Resources}></Route>
-      <Route exact path='/concept' component={Concept}></Route>
+      <Route exact path='/concept/:slug' component={Concept}></Route>
     </Switch>
   );
 export default Routes;
