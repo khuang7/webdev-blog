@@ -141,31 +141,39 @@ const TopicsTree = (props) => {
       setLoading(false);
       });
     }
-    console.log(cssentries)
-    console.log(cssdata)
 
       if (loading) {
         return <h1> loading.... </h1>
     }
 
-    const renderOurTree = (nodes) => {
+    const treeItems = [];
+    
+    treeItems.push( 
       <TreeItem
-      
+      key='root'
+      nodeId=1
+      label='html'
       >
-
-
+        html
       </TreeItem>
-    }
+    )
 
+    cssentries.forEach(element => treeItems.push(
+    <TreeItem classes={{ label: classes[element.list.title]}}
+      key={element.list.id} 
+      nodeId={element.list.id} 
+      label={element.list.name}
+      >
+    </TreeItem>
 
-
+  ));
 
     const renderTree = (nodes) => (
         <Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
         <TreeItem classes={{ label: classes[nodes.title]}}
         key={nodes.id} 
         nodeId={nodes.id} 
-        label={nodes.name}
+        label={nodes.title}
         >
           {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
         </TreeItem>
@@ -178,7 +186,7 @@ const TopicsTree = (props) => {
               defaultExpanded={['root']}
               defaultExpandIcon={<ChevronRightIcon />}
             >
-              {renderTree(string2map[props.data])}
+              {treeItems}
             </TreeView>)
           }
         
