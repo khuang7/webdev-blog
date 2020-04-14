@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -6,6 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Link } from 'react-router-dom';
 
+import { getFirebase } from "../firebase";
 
 const htmldata = {
   id: 'root',
@@ -115,9 +116,52 @@ const useStyles = makeStyles({
     }
   });
 
+
+
+
 const TopicsTree = (props) => {
-    const classes = useStyles();
+  const classes = useStyles();
+  const [cssentries, setCssentries] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  if (loading && !cssentries.length){
+    const dbRef = getFirebase().database().ref()
+    dbRef
+    .child("cssdata")
+    .child("children")
+    .once("value")
+    .then(snapshot => {
+      let data = [];
+      const snapshotVal = snapshot.val();
+
+      for (let slug in snapshotVal) {
+          data.push(snapshotVal[slug]);
+      }
+      setCssentries(data);
+      setLoading(false);
+      });
+    }
+    console.log(cssentries)
+    console.log(cssdata)
+
+      if (loading) {
+        return <h1> loading.... </h1>
+    }
+
+    const renderOurTree = (nodes) => {
+      <TreeItem
+      
+      >
+
+
+      </TreeItem>
+    }
+
+
+
+
     const renderTree = (nodes) => (
+        <Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
         <TreeItem classes={{ label: classes[nodes.title]}}
         key={nodes.id} 
         nodeId={nodes.id} 
@@ -125,6 +169,7 @@ const TopicsTree = (props) => {
         >
           {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
         </TreeItem>
+        </Link>
       );
         return (              
               <TreeView
@@ -139,4 +184,4 @@ const TopicsTree = (props) => {
         
 export default TopicsTree   
 
-
+// {renderTree(string2map[props.data])}

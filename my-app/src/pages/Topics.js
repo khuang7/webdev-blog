@@ -49,7 +49,7 @@ export default function Topics() {
         <div className={classes.root}>
             <NavBar/>
             <div className = {classes.centerContainer}>
-            <Typography className={classes.title} > some interesting topics </Typography>
+            <Typography className={classes.title} > <p>some interesting topics </p></Typography>
             <TopicsTree data={'htmldata'}/>
             <TopicsTree data={'cssdata'}/>
             <TopicsTree data={'jsdata'}/>
