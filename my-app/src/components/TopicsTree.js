@@ -4,6 +4,8 @@ import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
+import { Link } from 'react-router-dom';
+
 
 const htmldata = {
   id: 'root',
@@ -12,21 +14,10 @@ const htmldata = {
   children: [
     {
       id: '1',
-      name: 'HTML concept 1',
+      name: 'tbc',
       title: 'label',
     },
 
-    { 
-      id: '2',
-      name: 'HTML Concept 2',
-      title: 'label'
-    },
-    
-    {
-      id: '3',
-      name: 'HTML Concept 3',
-      title: 'label'
-    },
   ],
 };
 
@@ -51,21 +42,42 @@ const cssdata = {
       id: '3',
       name: 'styled components',
       title: 'label',
-      children: [
-        {
-          id: '4',
-          name: 'Child - 4',
-          title: 'label',
-        },
-      ],
     },
   ],
 };
+
+const jsdata = {
+  id: 'root',
+  name: 'js',
+  title: 'labelTitle',
+  children: [
+    {
+      id: '1',
+      name: 'react',
+      title: 'label',
+    },
+
+    { 
+      id: '2',
+      name: 'mui',
+      title: 'label'
+    },
+
+    {
+      id: '3',
+      name: 'firebase',
+      title: 'label',
+    },
+  ],
+};
+
+
 
 // a temp method for now.. lol
 const string2map = {
   'htmldata' : htmldata,
   'cssdata' : cssdata, 
+  'jsdata' : jsdata, 
 }
 
 
@@ -84,18 +96,20 @@ const useStyles = makeStyles({
         fontSize: '50px'
     },
     label: {
-      backgroundColor: '#FEA993',
+      backgroundColor: '#F19E8E',
       fontFamily: 'monospace',
       fontSize: '15px',
       textAlign: 'center',
       color: 'black'
     },
     labelTitle: {
-      backgroundColor: '#4A0100',
+      backgroundColor: '#58656D!important',
       fontFamily: 'monospace',
-      fontSize: '2em',
+      fontSize: '15px',
       textAlign: 'center',
+      color: 'white',
     },
+    
     labelColor: {
       backgroundColor: 'white'
     }

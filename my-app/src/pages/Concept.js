@@ -46,49 +46,46 @@ const useStyles = makeStyles({
 });
 
 
-
 // add specific highlight code here maybe?!?
 export default function Concept() {
     const [loading, setLoading] = useState(true);
     const [blogPosts, setBlogPosts] = useState([]);
     const classes = useStyles();
-    //let { slug } = useParams();
-
+    let { slug } = useParams();
+    var counter = 0;
     if (loading && !blogPosts.length) {
-        getFirebase()
-          .database()
-          .ref()
-          .child("posts")
-          .child("page1")
-          .once("value")
-          .then(snapshot => {
-            let posts = [];
-            const snapshotVal = snapshot.val();
-            for (let slug in snapshotVal) {
-                console.log("slug" + slug)
-              posts.push(snapshotVal[slug]);
-              console.log("hi there?")
-            }
+        const dbRef = getFirebase().database().ref()
 
+        dbRef
+        .child("posts")
+        .child("page1")
+        .once("value")
+        .then(snapshot => {
+        let posts = [];
+        const snapshotVal = snapshot.val();
 
-            setBlogPosts(posts);
-            setLoading(false);
-          });
+        for (let slug in snapshotVal) {
+            counter = counter + 1;
+            console.log("counter" + counter)
+            posts.push(snapshotVal[slug]);
+        }
+        setBlogPosts(posts);
+        setLoading(false);
+        });
       }
+
 
     if (loading) {
         return <h1> loading.... </h1>
     }
-
+    
     return (
         <div className={classes.root}>
         <NavBar/>
-          {blogPosts.map(blogPost => (
             <div className = {classes.centerContainer}>
-            <Typography className={classes.title} > WYYYT </Typography>
-            <Typography className={classes.blog} > testing </Typography>
+            <Typography className={classes.title} > {blogPosts[1]} </Typography>
+            <Typography className={classes.blog} > {blogPosts[0]} </Typography>
             </div>
-          ))}
         </div>
       );
     };
@@ -119,5 +116,7 @@ export default function Concept() {
 
         setBlogPosts(posts);
         setLoading(false);
+
+        
 
 */

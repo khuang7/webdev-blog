@@ -1,14 +1,11 @@
 import React from 'react';
 import { makeStyles, Typography } from '@material-ui/core/';
 import TopicsTree from '../components/TopicsTree'
-
-
-
-
+import NavBar from '../components/NavBar'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      backgroundColor: '#EFEFEF',
+      backgroundColor: '#98756F',
       minHeight: '100vh'
     },
 
@@ -16,21 +13,28 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         verticalAlign: 'middle',
         position: 'relative',
-        paddingTop: '5%'
+        paddingTop: '10%'
       },
 
     title: {
-        fontSize: '20px',
-        color: '#FEA993'
+        fontSize: '25px',
+        color: 'black',
+        fontFamily: 'monospace'
+               
       },
     titleText: {
+        fontFamily: 'monospace',
         fontSize: '15px',
-        lineHeight: '20px',
-        paddingTop: '2em',
-        color: 'black'
+        lineHeight: '1em',
+        paddingTop: '1em',
+        color: 'black',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        maxWidth: '50%'
+
       }, 
       table : {
-          paddingTop: '5%',
+          paddingTop: '10%',
             display: 'inline-block',
             marginLeft: 'auto',
             marginRight: 'auto',
@@ -43,12 +47,12 @@ export default function Topics() {
     const classes = useStyles();
     return (
         <div className={classes.root}>
+            <NavBar/>
             <div className = {classes.centerContainer}>
-            <Typography className={classes.title} > topics</Typography>
-            <Typography className={classes.titleText}> chosen topics for this specific course. Generally concept that are a bit foreign to me</Typography>
-            <Typography className={classes.titleText}> ! = important</Typography>
+            <Typography className={classes.title} > some interesting topics </Typography>
             <TopicsTree data={'htmldata'}/>
             <TopicsTree data={'cssdata'}/>
+            <TopicsTree data={'jsdata'}/>
             </div>
         </div>
     )

@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,9 +30,9 @@ const NavBar = (props) => {
               spacing={24}
             >
               <Grid item>
-                <Typography type="title" color="inherit">
+              <Link to="/" style={{ textDecoration: 'none', color: 'black' }}><Typography type="title" color="inherit">
                   webdev with kev -- p gh 
-                </Typography>
+                </Typography> </Link>
               </Grid>
               <Grid item>
                 <Typography type="title" color="inherit">
