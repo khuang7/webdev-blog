@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import NavBar from '../components/NavBar';
 import { Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
+import Icon from '@material-ui/core/Icon';
+import PopUpForm from '../components/PopUpForm'
 
 // firebase essentials
 import { getFirebase } from "../firebase";
@@ -42,8 +44,40 @@ const useStyles = makeStyles({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: '3em'
+    },
+    icon: {
+        textAlign: 'center',
+        paddingLeft: 'auto',
+        paddingRight: 'auto',
+    },
+
+    addBar: {
+        height: '20px',
+        width: '2%',
+        backgroundColor: '#EFEFEF',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        margin: '2em',
+
+        '&:hover': {
+            backgroundColor: 'black'
+        }
     }
+
 });
+// db Related Functions
+function handleClick() {
+
+}
+
+function addToDB() {
+    const dbRef = getFirebase().database().ref()
+    dbRef.child('testposts').push()
+    .set({
+        "concept": "bla bla bla",
+        "anotherConcept": "hehehe"
+    })
+  }
 
 
 // add specific highlight code here maybe?!?
@@ -53,13 +87,12 @@ export default function Concept() {
     const [blogPosts, setBlogPosts] = useState([]);
     const classes = useStyles();
     let { slug } = useParams();
-    var counter = 0;
+
+
     if (loading && !blogPosts.length) {
         const dbRef = getFirebase().database().ref()
 
-        dbRef
-        .child("posts")
-        .child(slug)
+        dbRef.child("posts").child(slug)
         .once("value")
         .then(snapshot => {
         let posts = [];
@@ -74,9 +107,6 @@ export default function Concept() {
         setLoading(false);
         });
       }
-  
-
-    
 
     if (loading) {
         return <h1> loading.... </h1>
@@ -87,8 +117,12 @@ export default function Concept() {
     }
     
     const blogposts = []
+    // check if empty!
     blogPosts[0].forEach(element => blogposts.push(
+        <div>
         <Typography className={classes.blog}> {element.list.content} </Typography>
+        <PopUpForm/>
+        </div>
     ));
 
     // console.log(element.list.type)
@@ -98,10 +132,11 @@ export default function Concept() {
         <div className={classes.root}>
         <NavBar/>
             <div className = {classes.centerContainer}>
-            <Typography className={classes.title} > {blogPosts[1]} </Typography>
+            <Typography  className={classes.title} > {blogPosts[1]} </Typography>
             {blogposts}
             </div>
         </div>
       );
     };
+
 

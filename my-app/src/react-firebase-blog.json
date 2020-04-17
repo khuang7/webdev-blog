@@ -45,6 +45,7 @@
             ]
         }
     },
+
     "htmldata": {
         "id": "root",
         "name": "html",
@@ -79,5 +80,9 @@
                 }
             }
         ]
+    },
+
+    "testposts": {
+      "random-entry": "testing"
     }
 }

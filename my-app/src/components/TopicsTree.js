@@ -6,6 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Link } from 'react-router-dom';
 
+
 import { getFirebase } from "../firebase";
 
 const htmldata = {
@@ -72,8 +73,6 @@ const jsdata = {
   ],
 };
 
-
-
 // a temp method for now.. lol
 const string2map = {
   'htmldata' : htmldata,
@@ -116,6 +115,13 @@ const useStyles = makeStyles({
     }
   });
 
+function addDB() {
+  // get the db ref
+  var dbRef = getFirebase().database().ref()
+  dbRef.child("text").set("some value")
+  dbRef.push().set("what happens here?")
+
+}
 
 
 
@@ -143,18 +149,51 @@ const TopicsTree = (props) => {
     }
 
       if (loading) {
-        return <h1> loading.... </h1>
+        return <h1> beep boop </h1>
     }
 
+    const renderTree = (nodes) => ( 
+        
+        <Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
+        <TreeItem classes={{ label: classes[nodes.title]}}
+        key={nodes.id} 
+        nodeId={nodes.id} 
+        label={nodes.name}
+        >
+          {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
+        
+        </TreeItem>
+        </Link>
+
+      );
+        return (              
+            <div>
+              <TreeView
+              className={classes.root}
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpanded={['root']}
+              defaultExpandIcon={<ChevronRightIcon />}
+            >
+              {renderTree(string2map[props.data])}
+            </TreeView>
+
+            </div>
+            )
+          }
+
+export default TopicsTree   
+
+
+
+/* DB PULL METHOD... tyr later!
     const treeItems = [];
     
     treeItems.push( 
-      <TreeItem
+      <TreeItem classes={{ label: classes['labelTitle']}}
       key='root'
-      nodeId=1
+      nodeId='root'
       label='html'
       >
-        html
       </TreeItem>
     )
 
@@ -164,32 +203,8 @@ const TopicsTree = (props) => {
       nodeId={element.list.id} 
       label={element.list.name}
       >
+        {Array.isArray(element.list.children) ? element.list.children.map((node) => renderTree(node)) : null}
     </TreeItem>
-
   ));
 
-    const renderTree = (nodes) => (
-        <Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
-        <TreeItem classes={{ label: classes[nodes.title]}}
-        key={nodes.id} 
-        nodeId={nodes.id} 
-        label={nodes.title}
-        >
-          {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
-        </TreeItem>
-        </Link>
-      );
-        return (              
-              <TreeView
-              className={classes.root}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpanded={['root']}
-              defaultExpandIcon={<ChevronRightIcon />}
-            >
-              {treeItems}
-            </TreeView>)
-          }
-        
-export default TopicsTree   
-
-// {renderTree(string2map[props.data])}
+*/

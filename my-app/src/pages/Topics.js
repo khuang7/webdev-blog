@@ -48,11 +48,15 @@ export default function Topics() {
     return (
         <div className={classes.root}>
             <NavBar/>
+           
             <div className = {classes.centerContainer}>
             <Typography className={classes.title} > <p>some interesting topics </p></Typography>
             <TopicsTree data={'htmldata'}/>
+        
             <TopicsTree data={'cssdata'}/>
+
             <TopicsTree data={'jsdata'}/>
+            
             </div>
         </div>
     )
