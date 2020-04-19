@@ -97,13 +97,13 @@ export default function Concept() {
         .then(snapshot => {
             let posts = [];
             snapshot.forEach(function(childNodes) {
-                console.log("pushing in" + childNodes.val())
+                console.log("pushing in" + childNodes.val().content + "AND" + childNodes.val().type)
                 posts.push(
                     {   "content": childNodes.val().content,
                         "type" :childNodes.val().type
                     })
             })
-
+            
             setBlogPosts(posts);
             setLoading(false);
         });
@@ -121,7 +121,7 @@ export default function Concept() {
 
     const blogposts = []
     // check if empty!
-    blogPosts.map(element => blogposts.push(
+    blogPosts.forEach(element => blogposts.push(
         <div>
         <Typography className={classes.blog}> {element.content} </Typography>
         <PopUpForm/>

@@ -38,6 +38,7 @@ const useStyles = makeStyles({
 
 function addToDB(value) {
   const dbRef = getFirebase().database().ref()
+  // TODO: change mui to fit whatever page we're on
   dbRef.child('posts').child('mui').push()
   .set({
       "content": value,
