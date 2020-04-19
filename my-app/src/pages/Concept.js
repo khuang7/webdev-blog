@@ -92,19 +92,20 @@ export default function Concept() {
     if (loading && !blogPosts.length) {
         const dbRef = getFirebase().database().ref()
 
-        dbRef.child("posts").child(slug)
+        dbRef.child("posts").child("mui")
         .once("value")
         .then(snapshot => {
-        let posts = [];
-        const snapshotVal = snapshot.val();
-        if (!snapshot.exists()) {
-            setEntryExists(false)
-        }
-        for (let slug in snapshotVal) {
-            posts.push(snapshotVal[slug]);
-        }
-        setBlogPosts(posts);
-        setLoading(false);
+            let posts = [];
+            snapshot.forEach(function(childNodes) {
+                console.log("pushing in" + childNodes.val())
+                posts.push(
+                    {   "content": childNodes.val().content,
+                        "type" :childNodes.val().type
+                    })
+            })
+
+            setBlogPosts(posts);
+            setLoading(false);
         });
       }
 
@@ -116,11 +117,13 @@ export default function Concept() {
         return <h1>page does not exist </h1> 
     }
     
+
+
     const blogposts = []
     // check if empty!
-    blogPosts[0].forEach(element => blogposts.push(
+    blogPosts.map(element => blogposts.push(
         <div>
-        <Typography className={classes.blog}> {element.list.content} </Typography>
+        <Typography className={classes.blog}> {element.content} </Typography>
         <PopUpForm/>
         </div>
     ));
@@ -140,3 +143,13 @@ export default function Concept() {
     };
 
 
+/*
+            if (!snapshot.exists()) {
+                setEntryExists(false)
+            }
+            console.log("TEST" + snapshotVal)
+            for (let slug in snapshotVal) {
+                console.log(slug)
+                posts.push(snapshotVal[slug]);
+            }
+*/

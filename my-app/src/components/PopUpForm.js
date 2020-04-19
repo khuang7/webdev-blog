@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { getFirebase } from "../firebase";
 
 const useStyles = makeStyles({
     root: {
@@ -36,45 +36,77 @@ const useStyles = makeStyles({
 });
 
 
-
+function addToDB(value) {
+  const dbRef = getFirebase().database().ref()
+  dbRef.child('posts').child('mui').push()
+  .set({
+      "content": value,
+      "type": "type goes here"
+  })
+}
 
 
 export default function FormDialog() {
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState('')
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
 
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  }
+  
+  const handleSubmit = (event) => {
+    if(value) {
+      alert('An essay was submitted: ' + value);
+      event.preventDefault();
+      addToDB(value)
+      handleClose()
+    } else {
+      alert("nothing entered!")
+    }
+  };
+
   return (
     <div className={classes.root}>
-    <div  className={classes.addBar} onClick={handleClickOpen}/>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Enter Post</DialogTitle>
-        <DialogContent>
-          <TextField
+    <div  className={classes.addBar} onClick={handleClickOpen}/>  
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <DialogTitle id="form-dialog-title">Enter Post</DialogTitle>
+    <DialogContent>
+    <form onSubmit={handleSubmit}>
+          <label>
+            <TextField 
+            type="text" 
+            value={value} 
+            onChange={handleChange}
             autoFocus
-            multiline="true"
+            multiline
             margin="dense"
-            id="blogtext"
-            label="blog post"
-            type="text"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button className={classes.buttonColor} onClick={handleClose} color="primary">
+             />
+          </label>
+    </form>
+    </DialogContent>
+    <DialogActions>
+    <Button className={classes.buttonColor} onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button className={classes.buttonColor} onClick={handleClose} color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+    <Button
+    className={classes.buttonColor} 
+    type="submit" 
+    value="Submit"
+    onClick={handleSubmit} 
+     >Submit</Button>
+    </DialogActions>
+    </Dialog>
     </div>
+
   );
 }
+
