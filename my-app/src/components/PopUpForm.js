@@ -4,55 +4,74 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core/styles';
 import { getFirebase } from "../firebase";
-
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import { useParams } from 'react-router-dom'
+import Icon from '@material-ui/core/Icon';
+// '#EFEFEF'
 const useStyles = makeStyles({
     root: {
         textAlign: 'center',
-        color: 'black'
-    },
-    addBar: {
-        height: '20px',
-        width: '2%',
-        backgroundColor: '#EFEFEF',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        margin: '2em',
+        color: 'black',
+        flexDirection: 'row',
+        textAlign: 'center',
 
-        '&:hover': {
-            backgroundColor: 'black'
-        }
     },
     dialogModal: {
-        width: '50%'
+        width: '80%'
     },
     buttonColor: {
         color: 'black'
-    }
+    },
+    textfield: {
+      height: 'auto',
+      width: '100%'
+
+    },
+    
+    dialog: {
+      width: '500px',
+      marginLeft: 'auto',
+      marginRight: 'auto'
+    },
+
+    centerButton: {
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      position: 'relative',
+      left: '50%',
+      display: 'flex',
+    },
+
 
 });
 
-
-function addToDB(value) {
+function addToDB(param, value, radioValue) {
   const dbRef = getFirebase().database().ref()
-  // TODO: change mui to fit whatever page we're on
-  dbRef.child('posts').child('mui').push()
+  dbRef.child('posts').child(param).push()
   .set({
       "content": value,
-      "type": "type goes here"
+      "type": radioValue
   })
 }
 
 
-export default function FormDialog() {
 
+
+export default function FormDialog(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('')
+  const [value, setValue] = React.useState('');
+  const [radioValue, setRadioValue] = React.useState('blog');
+  let { slug } = useParams();
 
+
+  // ADD BUTTON STUFF
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -63,22 +82,31 @@ export default function FormDialog() {
   const handleChange = (event) => {
     setValue(event.target.value);
   }
+
+  const handleRadioChange = (event) => {
+    setRadioValue(event.target.value)
+  }
   
-  const handleSubmit = (event) => {
+  const handleSubmit  = (param) => (event) => {
     if(value) {
-      alert('An essay was submitted: ' + value);
       event.preventDefault();
-      addToDB(value)
+      addToDB(param, value, radioValue)
       handleClose()
+      window.location.reload();
     } else {
-      alert("nothing entered!")
     }
   };
 
+
+
+
+
+
   return (
     <div className={classes.root}>
-    <div  className={classes.addBar} onClick={handleClickOpen}/>  
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+
+    <Icon onClick={handleClickOpen} className={classes.icon}>add_circle </Icon>
+    <Dialog className={classes.dialog} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
     <DialogTitle id="form-dialog-title">Enter Post</DialogTitle>
     <DialogContent>
     <form onSubmit={handleSubmit}>
@@ -90,9 +118,17 @@ export default function FormDialog() {
             autoFocus
             multiline
             margin="dense"
+            className = {classes.textfield}
              />
           </label>
     </form>
+    <FormControl size = "small" margin="dense" component="fieldset">
+          <RadioGroup aria-label="type" name="gender1" value={radioValue} onChange={handleRadioChange}>
+            <FormControlLabel value="blog" control={<Radio />} label="Blog" />
+            <FormControlLabel value="code" control={<Radio />} label="Code" />
+            <FormControlLabel value="title" control={<Radio />} label="Title" />
+          </RadioGroup>
+        </FormControl>
     </DialogContent>
     <DialogActions>
     <Button className={classes.buttonColor} onClick={handleClose} color="primary">
@@ -102,12 +138,12 @@ export default function FormDialog() {
     className={classes.buttonColor} 
     type="submit" 
     value="Submit"
-    onClick={handleSubmit} 
+    onClick={handleSubmit(slug)} 
      >Submit</Button>
     </DialogActions>
     </Dialog>
     </div>
-
   );
 }
+
 

@@ -7,7 +7,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const useStyles = makeStyles({
     root: {
@@ -15,43 +19,26 @@ const useStyles = makeStyles({
       flexGrow: 1,
     },
 
+    title1: {
+      '&:hover ~ $title2': {
+        backgroundColor: 'red',
+      }
+    },
+    title2: {}
+    
 });
 
+export default function Test() {
+    const classes = useStyles();
 
+      return (
+      <div className={classes.root}>
+        
+      <h1 className={classes.title1}> testing hover</h1>
+      <h2 className={classes.title2}> I wnt this tohover </h2>
+      </div>
 
-
-class Test extends React.Component {
-
-    constructor(props) {
-      super(props);
-      this.state = {value: ''};
-      this.handleChange = this.handleChange.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    handleChange(event) {
-      this.setState({value: event.target.value});
-    }
-  
-    handleSubmit(event) {
-      alert('A name was submitted: ' + this.state.value);
-      event.preventDefault();
-    }
-
-
-
-    render() {
-      
-        return (
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Name:
-            <TextField type="text" value={this.state.value} onChange={this.handleChange} />
-          </label>
-          <Button type="submit" value="Submit" />
-        </form>
       );
-    }
   }
-export default Test
+
 

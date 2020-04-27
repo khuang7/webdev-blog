@@ -5,7 +5,7 @@ import { Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
 import Icon from '@material-ui/core/Icon';
 import PopUpForm from '../components/PopUpForm'
-
+import DeleteForm from '../components/DeleteForm'
 // firebase essentials
 import { getFirebase } from "../firebase";
 
@@ -18,7 +18,8 @@ const useStyles = makeStyles({
 
         verticalAlign: 'middle',
         position: 'relative',
-        paddingTop: '2%'
+        paddingTop: '2%',
+
       },
     title: {
         textAlign: 'center',
@@ -26,6 +27,17 @@ const useStyles = makeStyles({
         fontWeight: 'light',
         fontFamily: 'monospace',
         textDecoration: 'underline'
+    },
+    icon: {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        position: 'relative',
+        display: 'flex',
+    },
+    deleteButton: {        
+        '&:hover ~ $blog': {
+            backgroundColor: 'red',
+          }
     },
     blog: {
         fontSize: '1.5em',
@@ -35,7 +47,9 @@ const useStyles = makeStyles({
         marginLeft: 'auto',
         marginRight: 'auto',
         lineHeight: '40px',
-    },
+
+
+    },    
     image: {
         height: '300px',
         width: '500px',
@@ -44,11 +58,6 @@ const useStyles = makeStyles({
         marginLeft: 'auto',
         marginRight: 'auto',
         marginTop: '3em'
-    },
-    icon: {
-        textAlign: 'center',
-        paddingLeft: 'auto',
-        paddingRight: 'auto',
     },
 
     addBar: {
@@ -62,94 +71,98 @@ const useStyles = makeStyles({
         '&:hover': {
             backgroundColor: 'black'
         }
-    }
+    },
+    sidebyside: {
+        display: 'flex'
+    },
+    addButton: {
+        marginTop: '5%'
+    },
 
 });
-// db Related Functions
-function handleClick() {
 
-}
 
-function addToDB() {
-    const dbRef = getFirebase().database().ref()
-    dbRef.child('testposts').push()
-    .set({
-        "concept": "bla bla bla",
-        "anotherConcept": "hehehe"
-    })
-  }
 
 
 // add specific highlight code here maybe?!?
+
+
 export default function Concept() {
     const [loading, setLoading] = useState(true);
-    const [entryExists, setEntryExists] = useState(true);
+    const [entryExists, setEntryExists] = useState(false);
     const [blogPosts, setBlogPosts] = useState([]);
     const classes = useStyles();
     let { slug } = useParams();
+    const [childClicked, setChildClicked] = useState (false)
+    const dbRef = getFirebase().database().ref()
+
+    const toggleClick = () => {
+        setChildClicked(prevState => ({
+            check: !prevState.check
+          }))
+    }
+
+    // check if entry exists
 
 
     if (loading && !blogPosts.length) {
-        const dbRef = getFirebase().database().ref()
-
-        dbRef.child("posts").child("mui")
+        dbRef.child("posts").child(slug)
         .once("value")
         .then(snapshot => {
             let posts = [];
             snapshot.forEach(function(childNodes) {
-                console.log("pushing in" + childNodes.val().content + "AND" + childNodes.val().type)
-                posts.push(
-                    {   "content": childNodes.val().content,
-                        "type" :childNodes.val().type
-                    })
+                posts.push([childNodes.val().content, 
+                            childNodes.val().type,
+                            childNodes.key])
             })
-            
             setBlogPosts(posts);
             setLoading(false);
         });
       }
-
+    //TODO: EMPTY CASE
+    if(entryExists) {
+        return(
+            <div className={classes.root}>
+            <NavBar/>
+                <div className = {classes.centerContainer}>
+                <Typography  className={classes.title} > {slug} </Typography>
+                <p> This page is fresh, add new content below please  </p>
+                <PopUpForm checkClick={toggleClick()} page={slug}/>
+                </div>
+            </div>
+        )
+    }
     if (loading) {
         return <h1> loading.... </h1>
     }
 
-    if(!entryExists) {
-        return <h1>page does not exist </h1> 
-    }
-    
-
-
+    console.log("blogposts is now" + blogPosts)
+    // inject the blogposts into our html via blogposts array
+    console.log(blogPosts)
     const blogposts = []
-    // check if empty!
     blogPosts.forEach(element => blogposts.push(
         <div>
-        <Typography className={classes.blog}> {element.content} </Typography>
-        <PopUpForm/>
+        <Typography className={classes[element[1]]}> {element[0]} </Typography>
+        <DeleteForm className={classes.deleteButton} deleteKey={element[2]}/>
         </div>
-    ));
-
-    // console.log(element.list.type)
-    // console.log(element.list.content)
+    ))    
 
     return (
         <div className={classes.root}>
         <NavBar/>
             <div className = {classes.centerContainer}>
-            <Typography  className={classes.title} > {blogPosts[1]} </Typography>
+            <Typography  className={classes.title} > {slug} </Typography>
             {blogposts}
+
+            <div className={classes.addButton}>
+            <PopUpForm className={classes.addButton}/>
             </div>
+            </div>
+
+
+
+
+
         </div>
       );
     };
-
-
-/*
-            if (!snapshot.exists()) {
-                setEntryExists(false)
-            }
-            console.log("TEST" + snapshotVal)
-            for (let slug in snapshotVal) {
-                console.log(slug)
-                posts.push(snapshotVal[slug]);
-            }
-*/
