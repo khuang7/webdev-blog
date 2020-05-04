@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: '25px',
+
   },
 
   thePlan: {

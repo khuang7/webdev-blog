@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import NavBar from '../components/NavBar';
 import { Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
-import Icon from '@material-ui/core/Icon';
 import PopUpForm from '../components/PopUpForm'
 import DeleteForm from '../components/DeleteForm'
 // firebase essentials
@@ -12,43 +11,44 @@ import { getFirebase } from "../firebase";
 const useStyles = makeStyles({
     root: {
         backgroundColor: '#EFEFEF',
-        minHeight: '100vh'
+        minHeight: '100vh',
+
     },
     centerContainer: {
-
         verticalAlign: 'middle',
         position: 'relative',
-        paddingTop: '2%',
+        paddingTop: '10%',
 
       },
     title: {
         textAlign: 'center',
-        fontSize: '30px',
+        fontSize: '20px',
         fontWeight: 'light',
         fontFamily: 'monospace',
         textDecoration: 'underline'
     },
-    icon: {
-        marginLeft: 'auto',
+    deleteButton: {
+        display:'inline-block',
+        marginLeft: '79%',
         marginRight: 'auto',
         position: 'relative',
-        display: 'flex',
-    },
-    deleteButton: {        
         '&:hover ~ $blog': {
-            backgroundColor: 'red',
+            textDecoration: 'line-through',
+          },
+          '&:hover ~ $title': {
+            textDecoration: 'line-through',
           }
     },
+
     blog: {
         fontSize: '1.5em',
         fontFamily: 'monospace',
-        marginTop: '2%',
+        marginTop: '',
         maxWidth: '45%',
         marginLeft: 'auto',
         marginRight: 'auto',
         lineHeight: '40px',
-
-
+        textAlign: 'center'
     },    
     image: {
         height: '300px',
@@ -72,9 +72,7 @@ const useStyles = makeStyles({
             backgroundColor: 'black'
         }
     },
-    sidebyside: {
-        display: 'flex'
-    },
+
     addButton: {
         marginTop: '5%'
     },
@@ -142,8 +140,9 @@ export default function Concept() {
     const blogposts = []
     blogPosts.forEach(element => blogposts.push(
         <div>
+        <div className={classes.deleteButton} ><DeleteForm deleteKey={element[2]}/></div>
         <Typography className={classes[element[1]]}> {element[0]} </Typography>
-        <DeleteForm className={classes.deleteButton} deleteKey={element[2]}/>
+        
         </div>
     ))    
 

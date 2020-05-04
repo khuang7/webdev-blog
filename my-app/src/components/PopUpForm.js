@@ -32,21 +32,7 @@ const useStyles = makeStyles({
       height: 'auto',
       width: '100%'
 
-    },
-    
-    dialog: {
-      width: '500px',
-      marginLeft: 'auto',
-      marginRight: 'auto'
-    },
-
-    centerButton: {
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      position: 'relative',
-      left: '50%',
-      display: 'flex',
-    },
+    } 
 
 
 });

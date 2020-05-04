@@ -45,8 +45,16 @@ const cssdata = {
       name: 'styled components',
       title: 'label',
     },
+    
   ],
 };
+
+
+
+
+
+
+
 
 const jsdata = {
   id: 'root',
@@ -57,6 +65,13 @@ const jsdata = {
       id: '1',
       name: 'react',
       title: 'label',
+      children: [
+        {
+          id: '5',
+          name: 'react-concept1',
+          title: 'label',
+        }
+      ]
     },
 
     { 
@@ -151,21 +166,23 @@ const TopicsTree = (props) => {
       if (loading) {
         return <h1> beep boop </h1>
     }
+//<Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
+// </Link>
 
-    const renderTree = (nodes) => ( 
-        
-        <Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
-        <TreeItem classes={{ label: classes[nodes.title]}}
+    const renderTree = (nodes) => (         
+        <TreeItem 
+        classes={{ label: classes[nodes.title]}}
         key={nodes.id} 
         nodeId={nodes.id} 
         label={nodes.name}
         >
           {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
-        
-        </TreeItem>
-        </Link>
 
-      );
+        </TreeItem>
+      ); 
+
+      
+
         return (              
             <div>
               <TreeView

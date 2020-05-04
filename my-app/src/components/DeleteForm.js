@@ -22,30 +22,27 @@ const useStyles = makeStyles({
         color: 'red',
         borderColor: 'red'
       },
-
+      
     icon: {
-        marginLeft: 'auto',
+        marginLeft: '79%',
         marginRight: 'auto',
         position: 'relative',
         display: 'flex',
-        opacity: '0',
+        opacity: '1',
 
         '&:hover': {
             opacity: '1',
-            color: 'red'
+            color:'red'
         }
 },
-
-
 });
 
 function deleteFromDB(param, key) {
     const dbRef = getFirebase().database().ref()
-    alert("removing key" + key)
+
     dbRef.child('posts').child(param).child(key).remove()
   }
 
-  
 export default function FormDialog(props) {
     const classes = useStyles();
     let { slug } = useParams();
@@ -65,7 +62,6 @@ export default function FormDialog(props) {
     handleCloseDelete();
     window.location.reload();
   }
-
   return (
     <div className={classes.root}>
     <DeleteForeverOutlinedIcon className={classes.icon} onClick={handleClickOpenDelete} />
@@ -83,7 +79,6 @@ export default function FormDialog(props) {
           <Button onClick={handleCloseDelete}>
             nah keep it
           </Button>
-
           <Button className={classes.redButton} onClick={()=>handleSubmitDelete(slug, props.deleteKey)}>
             get rid of it!
           </Button>
