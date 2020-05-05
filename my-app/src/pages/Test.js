@@ -6,19 +6,14 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import TextField from '@material-ui/core/TextField';
 import { getFirebase } from "../firebase";
+import { v1 as uuidv1 } from 'uuid';
 
-
-// get the list of all ids
-function generateID() {
-  var dbRef = getFirebase().database().ref()
-  
-}
 
 
 function addTopic(value) {
   if(value) {
     var dbRef = getFirebase().database().ref()
-    dbRef.child("cssdata").child(value).set({'id':'1',
+    dbRef.child("cssdata").child(value).set({'id':uuidv1(),
                                                 'title': 'label',
                                               'children': false  })
   }
@@ -29,6 +24,13 @@ function deleteTopic(topic) {
   var dbRef = getFirebase().database().ref()
   dbRef.child('cssdata').child(topic).remove()
   window.location.reload();
+}
+
+// pass cssdata as a param to the component
+function addChildTopic(subtopic, topic) {
+  var dbRef = getFirebase().database().ref()
+  dbRef.child('cssdata').child(topic).child('children').child(subtopic)
+  .set({'id':uuidv1(), 'title': 'label', 'children': false  })
 }
 
 
@@ -66,6 +68,26 @@ const useStyles = makeStyles({
     },
 
   },
+
+  sublabel: {
+    backgroundColor: 'palevioletred',
+    textAlign: 'center',
+    fontSize: '15px',
+    color: 'black',
+    border: '1px solid transparent',
+
+    '&:hover' :{
+      border: '1px dotted black',
+      backgroundColor: 'palepink'
+    },
+
+  },
+
+  subtopic: {
+    backgroundColor: 'yellow',
+    display: 'none'
+  },
+
   labelTitle: {
     backgroundColor: '#58656D!important',
     fontSize: '15px',
@@ -121,6 +143,7 @@ export default function Test() {
     const dbRef = getFirebase().database().ref()
     const [topicPosts, setTopicPosts] = useState([]);
     const [value, setValue] = React.useState("");
+    const [clicked, setClicked] = useState(false);
 
     const handleChange = (event) => {
       setValue(event.target.value);
@@ -128,6 +151,13 @@ export default function Test() {
 
     const handleDelete = (param) => {
       deleteTopic(param)
+    }
+
+    const handleAddSubTopic = (subtopic, topic) => {
+      setClicked(prevState => ({
+        clicked: !prevState.clicked
+      }))
+      console.log(clicked)
     }
 
     console.log("rendering")
@@ -162,30 +192,48 @@ export default function Test() {
         </TreeItem>
         </div>
       )
-      topicPosts.forEach(element => topicItems.push(
-        <TreeItem classes={{ label: classes['label']}}
-        key={element[0]} 
-        nodeId={element[0]} 
-        label={
-        <div>
-          <div className={classes.addSubTopic}>+</div>
-          <div className={classes.deleteButton} onClick={ () => handleDelete(element[3])}>x
-          </div>
-          <div className= {classes.labelText}>{element[3]}</div>
-        </div>
+
+      
+
+      for (let element in topicPosts) {
+        const subTopics = []
+        var sub = topicPosts[element][2]
+        if (sub) {
+          for (let subelement in sub) { 
+            subTopics.push (
+              <TreeItem classes={{ label: classes['sublabel']}}
+              key='1'
+              nodeId='1'
+              label={subelement}
+              />
+            )
+          }
         }
+
+        topicItems.push(
+          <TreeItem classes={{ label: classes['label']}}
+          key={topicPosts[element][0]} 
+          nodeId={topicPosts[element][0]} 
+          label={
+          <div>
+            <div className={classes.addSubTopic} onClick={() => handleAddSubTopic(element[3]) }>+</div>
+            <div className={classes.deleteButton} onClick={ () => handleDelete(element[3])}>x
+            </div>
+            <div className= {classes.labelText}>{topicPosts[element][3]}</div>
+          </div>
+          }
         >
-        
-        <TreeItem
-        label="test">
+         <TreeItem 
+          label="ADD SUBTOPIC HERE"
+          className={classes.subtopic}
+          style={ clicked ? { display:'block'} : {display : 'none'} }
+          
+        />
+        {sub ? subTopics : null }
+
         </TreeItem>
-        
-        </TreeItem>
-
-
-
-      ))
-
+        )
+      }
 
       return (
       <div className={classes.root}>
@@ -194,7 +242,7 @@ export default function Test() {
       disableSelection
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpanded={['root']}
-      defaultExpandIcon={<ChevronRightIcon />}
+      //defaultExpandIcon={<ChevronRightIcon />}
       >
       {topicItems}
       <TreeItem classes={{ label: classes['addButton']}}
@@ -221,14 +269,3 @@ export default function Test() {
       );
   }
 
-
-/*
-const renderTree = (nodes) => (         
-  <TreeItem classes={{ label: classes[nodes.title]}}
-  nodeId={nodes.id} 
-  label={nodes.name}
-  >
-    {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
-  </TreeItem>
-); 
-*/
