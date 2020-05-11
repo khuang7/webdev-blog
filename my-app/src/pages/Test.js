@@ -26,11 +26,18 @@ function deleteTopic(topic) {
   window.location.reload();
 }
 
+function deleteSubTopic(element, subelement) {
+  var dbRef = getFirebase().database().ref()
+  dbRef.child('cssdata').child(element).child('children').child(subelement).remove()
+  window.location.reload();
+}
+
 // pass cssdata as a param to the component
 function addChildTopic(subtopic, topic) {
   var dbRef = getFirebase().database().ref()
   dbRef.child('cssdata').child(topic).child('children').child(subtopic)
   .set({'id':uuidv1(), 'title': 'label', 'children': false  })
+  window.location.reload();
 }
 
 
@@ -80,12 +87,15 @@ const useStyles = makeStyles({
       border: '1px dotted black',
       backgroundColor: 'palepink'
     },
+    '&:hover $deleteButton': {
+      color: 'black',
+    },
 
   },
 
   subtopic: {
-    backgroundColor: 'yellow',
-    display: 'none'
+    backgroundColor: 'white',
+    textAlign: 'center'
   },
 
   labelTitle: {
@@ -138,29 +148,40 @@ const useStyles = makeStyles({
 });
 
 export default function Test() {
+
+  // so many states!!
     const classes = useStyles();
     const [loading, setLoading] = useState(true);
     const dbRef = getFirebase().database().ref()
     const [topicPosts, setTopicPosts] = useState([]);
-    const [value, setValue] = React.useState("");
+    const [value, setValue] = useState("");
+    
+
     const [clicked, setClicked] = useState(false);
+    const [subTopic, setSubTopic] = useState("");
+    const [subTopicValue, setSubTopicValue] = useState("")
 
     const handleChange = (event) => {
       setValue(event.target.value);
+    };
+
+    const handleSubChange = (event) => {
+      setSubTopicValue(event.target.value);
     };
 
     const handleDelete = (param) => {
       deleteTopic(param)
     }
 
-    const handleAddSubTopic = (subtopic, topic) => {
-      setClicked(prevState => ({
-        clicked: !prevState.clicked
-      }))
-      console.log(clicked)
+    const handleAddSubTopic = (e, subtopic) =>  {
+      e.stopPropagation()
+      setClicked(!clicked)
+      setSubTopic(subtopic)
     }
 
-    console.log("rendering")
+    const handleSubDelete = (element, subelement) => {
+      deleteSubTopic(element, subelement)
+    }
     if (loading && !topicPosts.length) {
       dbRef.child("cssdata")
       .orderByChild('id')
@@ -193,8 +214,6 @@ export default function Test() {
         </div>
       )
 
-      
-
       for (let element in topicPosts) {
         const subTopics = []
         var sub = topicPosts[element][2]
@@ -204,7 +223,13 @@ export default function Test() {
               <TreeItem classes={{ label: classes['sublabel']}}
               key='1'
               nodeId='1'
-              label={subelement}
+              label={
+                <div>
+                  <div className={classes.deleteButton} onClick={ () => handleSubDelete(topicPosts[element][3], subelement)}>x</div>
+                  <div className= {classes.labelText}> {subelement}</div>
+                </div>
+                
+                }
               />
             )
           }
@@ -216,21 +241,35 @@ export default function Test() {
           nodeId={topicPosts[element][0]} 
           label={
           <div>
-            <div className={classes.addSubTopic} onClick={() => handleAddSubTopic(element[3]) }>+</div>
-            <div className={classes.deleteButton} onClick={ () => handleDelete(element[3])}>x
-            </div>
+            <div className={classes.addSubTopic} onClick={(e) => handleAddSubTopic(e, topicPosts[element][3]) }>+</div>
+            <div className={classes.deleteButton} onClick={ () => handleDelete(topicPosts[element][3])}>x</div>
             <div className= {classes.labelText}>{topicPosts[element][3]}</div>
           </div>
           }
         >
-         <TreeItem 
-          label="ADD SUBTOPIC HERE"
-          className={classes.subtopic}
-          style={ clicked ? { display:'block'} : {display : 'none'} }
-          
-        />
         {sub ? subTopics : null }
-
+        {(clicked && subTopic == topicPosts[element][3]) ? 
+                (<TreeItem classes={{ label: classes['subtopic']}}
+                label={
+                  <TextField
+                  onKeyPress={(ev) => {
+                    if (ev.key === 'Enter') {
+                      addChildTopic(subTopicValue, topicPosts[element][3]);
+                      ev.preventDefault();
+                    }
+                  }}
+                    fullWidth
+                    placeholder="new subtopic"
+                    className={classes.textField}
+                    value={subTopicValue}
+                    InputProps={{ classes: { input: classes.textField } }}
+                    onChange={handleSubChange}
+                  />
+                }
+              />)
+                :
+                null
+        }
         </TreeItem>
         )
       }
@@ -241,7 +280,7 @@ export default function Test() {
       className={classes.root}
       disableSelection
       defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpanded={['root']}
+      //defaultExpanded={['root']}
       //defaultExpandIcon={<ChevronRightIcon />}
       >
       {topicItems}
