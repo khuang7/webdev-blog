@@ -5,96 +5,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { Link } from 'react-router-dom';
-
+import { v1 as uuidv1 } from 'uuid';
+import TextField from '@material-ui/core/TextField';
 
 import { getFirebase } from "../firebase";
-
-const htmldata = {
-  id: 'root',
-  name: 'html',
-  title: 'labelTitle',
-  children: [
-    {
-      id: '1',
-      name: 'tbc',
-      title: 'label',
-    },
-
-  ],
-};
-
-const cssdata = {
-  id: 'root',
-  name: 'css',
-  title: 'labelTitle',
-  children: [
-    {
-      id: '1',
-      name: 'flexbox',
-      title: 'label',
-    },
-
-    { 
-      id: '2',
-      name: 'grid',
-      title: 'label'
-    },
-
-    {
-      id: '3',
-      name: 'styled components',
-      title: 'label',
-    },
-    
-  ],
-};
-
-
-
-
-
-
-
-
-const jsdata = {
-  id: 'root',
-  name: 'js',
-  title: 'labelTitle',
-  children: [
-    {
-      id: '1',
-      name: 'react',
-      title: 'label',
-      children: [
-        {
-          id: '5',
-          name: 'react-concept1',
-          title: 'label',
-        }
-      ]
-    },
-
-    { 
-      id: '2',
-      name: 'mui',
-      title: 'label'
-    },
-
-    {
-      id: '3',
-      name: 'firebase',
-      title: 'label',
-    },
-  ],
-};
-
-// a temp method for now.. lol
-const string2map = {
-  'htmldata' : htmldata,
-  'cssdata' : cssdata, 
-  'jsdata' : jsdata, 
-}
-
 
 const useStyles = makeStyles({
     root: {
@@ -111,117 +25,313 @@ const useStyles = makeStyles({
         fontSize: '50px'
     },
     label: {
-      backgroundColor: '#F19E8E',
-      fontFamily: 'monospace',
-      fontSize: '15px',
+      backgroundColor: 'transparent',
       textAlign: 'center',
-      color: 'black'
+      fontSize: '20px',
+      color: 'black',
+      borderColor: 'black',
+      borderStyle: 'solid',
+      marginTop: '-0.5px',
+      borderWidth: '0.5px',
+  
+      '&:hover' :{
+        border: '1px dotted black',
+        backgroundColor: '#728639'
+      },
+  
+      '&:hover $addSubTopic': {
+        color: 'black',
+      },
+      '&:hover $deleteButton': {
+        color: 'black',
+      },
+  
     },
-    labelTitle: {
-      backgroundColor: '#58656D!important',
-      fontFamily: 'monospace',
-      fontSize: '15px',
+  
+    sublabel: {
+      backgroundColor: '#FCC006',
       textAlign: 'center',
-      color: 'white',
+      fontSize: '15px',
+      color: 'black',
+      border: '1px solid transparent',
+  
+      '&:hover' :{
+        border: '1px dotted black',
+        backgroundColor: 'palepink'
+      },
+      '&:hover $deleteButton': {
+        color: 'black',
+      },
+  
+    },
+  
+    subtopic: {
+      backgroundColor: 'white',
+      textAlign: 'center'
+    },
+  
+    labelTitle: {
+      backgroundColor: '#D8DCD6!important',
+      fontSize: '30px',
+      textAlign: 'center',
+      color: 'black',
+      borderColor: 'black',
+      borderStyle: 'solid',
+      borderSize: '1px',
+      letterSpacing: '3px'
+
     },
     
     labelColor: {
       backgroundColor: 'white'
+    },
+    addButton: {
+      textAlign: 'center',
+      textDecoration: 'none',
+      opacity: 0,
+      color: '#D8DCD6',
+      '&:hover': {
+        opacity: 1,
+      },
+  
+    },
+    textField: {
+      textAlign: 'center',
+      fontSize: '15px' ,
+      textDecoration: 'none'
+  
+    },
+    labelRoot: {
+      textAlign: 'center',
+      display: 'inline-block'
+    },
+    deleteButton: {
+      float: 'right',
+      marginRight: '-5%',
+      color: '#D8DCD6',
+      '&:hover ~ $labelText': {
+        textDecoration: 'line-through',
+        color: '#FE2C54'
+      },
+    },
+    labelText: {
+      display: 'inline-block',
+      margin:'0 auto',
+      textAlign: 'center',
+    },
+    addSubTopic: {
+      float: 'right',
+      marginRight: '-10%',
+      color: '#D8DCD6',
     }
   });
 
-function addDB() {
-  // get the db ref
-  var dbRef = getFirebase().database().ref()
-  dbRef.child("text").set("some value")
-  dbRef.push().set("what happens here?")
-
-}
-
+// ALL DB FUNCTIONS HERE
+function addTopic(title, value) {
+    if(value) {
+      var dbRef = getFirebase().database().ref()
+      dbRef.child(title).child(value).set({'id':uuidv1(),
+                                                  'title': 'label',
+                                                'children': false  })
+    }
+    window.location.reload();
+  }
+  
+  function deleteTopic(title, topic) {
+    var dbRef = getFirebase().database().ref()
+    dbRef.child(title).child(topic).remove()
+    window.location.reload();
+  }
+  
+  function deleteSubTopic(title ,element, subelement) {
+    var dbRef = getFirebase().database().ref()
+    dbRef.child(title).child(element).child('children').child(subelement).remove()
+    window.location.reload();
+  }
+  
+  // pass cssdata as a param to the component
+  function addChildTopic(title, subtopic, topic) {
+    var dbRef = getFirebase().database().ref()
+    dbRef.child(title).child(topic).child('children').child(subtopic)
+    .set({'id':uuidv1(), 'title': 'label', 'children': false  })
+    window.location.reload();
+  }
 
 
 const TopicsTree = (props) => {
   const classes = useStyles();
-  const [cssentries, setCssentries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dbRef = getFirebase().database().ref()
+  const [topicPosts, setTopicPosts] = useState([]);
+  const [value, setValue] = useState("");
+  const [clicked, setClicked] = useState(false);
+  const [subTopic, setSubTopic] = useState("");
+  const [subTopicValue, setSubTopicValue] = useState("")
 
-  if (loading && !cssentries.length){
-    const dbRef = getFirebase().database().ref()
-    dbRef
-    .child("cssdata")
-    .child("children")
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  const handleSubChange = (event) => {
+    setSubTopicValue(event.target.value);
+  };
+
+  const handleDelete = (param) => {
+    deleteTopic(props.data, param)
+  }
+
+  const handleAddSubTopic = (e, subtopic) =>  {
+    e.stopPropagation()
+    setClicked(!clicked)
+    setSubTopic(subtopic)
+  }
+
+  const handleSubDelete = (element, subelement) => {
+    deleteSubTopic(props.data, element, subelement)
+  }
+
+
+
+
+  if (loading && !topicPosts.length) {
+    dbRef.child(props.data)
+    .orderByChild('id')
     .once("value")
     .then(snapshot => {
-      let data = [];
-      const snapshotVal = snapshot.val();
-
-      for (let slug in snapshotVal) {
-          data.push(snapshotVal[slug]);
-      }
-      setCssentries(data);
+      let topics = [];
+      snapshot.forEach(function(nodes) {
+        topics.push([nodes.val().id, 
+                    nodes.val().title,
+                    nodes.val().children,
+                    nodes.key])
+      })
+      setTopicPosts(topics);
       setLoading(false);
-      });
-    }
-
-      if (loading) {
-        return <h1> beep boop </h1>
-    }
+    })
+  }
+  if (loading) {
+    return <h1> loading.... </h1>
+}
 //<Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
 // </Link>
 
-    const renderTree = (nodes) => (         
-        <TreeItem 
-        classes={{ label: classes[nodes.title]}}
-        key={nodes.id} 
-        nodeId={nodes.id} 
-        label={nodes.name}
-        >
-          {Array.isArray(nodes.children) ? nodes.children.map((node) => renderTree(node)) : null}
 
-        </TreeItem>
-      ); 
-
-      
-
-        return (              
-            <div>
-              <TreeView
-              className={classes.root}
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpanded={['root']}
-              defaultExpandIcon={<ChevronRightIcon />}
-            >
-              {renderTree(string2map[props.data])}
-            </TreeView>
-
-            </div>
-            )
-          }
-
-export default TopicsTree   
-
-
-
-/* DB PULL METHOD... tyr later!
-    const treeItems = [];
-    
-    treeItems.push( 
+    // 1 Pushing the HEADER
+    const topicItems = [];
+    topicItems.push(
+      <div>
       <TreeItem classes={{ label: classes['labelTitle']}}
-      key='root'
+      key='root' 
       nodeId='root'
-      label='html'
+      label={props.data}
       >
       </TreeItem>
+      </div>
     )
 
-    cssentries.forEach(element => treeItems.push(
-    <TreeItem classes={{ label: classes[element.list.title]}}
-      key={element.list.id} 
-      nodeId={element.list.id} 
-      label={element.list.name}
-      >
-        {Array.isArray(element.list.children) ? element.list.children.map((node) => renderTree(node)) : null}
-    </TreeItem>
-  ));
 
-*/
+    // 2 Traverse through all topics, on the way traverse through subtopics if exist
+    for (let element in topicPosts) {
+      const subTopics = []
+      var sub = topicPosts[element][2]
+      if (sub) {
+        for (let subelement in sub) { 
+          subTopics.push (
+            <TreeItem classes={{ label: classes['sublabel']}}
+            key='1'
+            nodeId='1'
+            label={
+              <div>
+                <div className={classes.deleteButton} onClick={ () => handleSubDelete(topicPosts[element][3], subelement)}>x</div>
+                <div className= {classes.labelText}> {subelement}</div>
+              </div>
+              
+              }
+            />
+          )
+        }
+      }
+
+
+    // PUT EVERYTHING INTO THE TOPICITEMS Array (Topics + subtopics)
+    topicItems.push(
+        
+        // For each topic here, add subtopic, and if clicked we can reveal an add topic page
+        <TreeItem classes={{ label: classes['label']}}
+        key={topicPosts[element][0]} 
+        nodeId={topicPosts[element][0]} 
+        label={
+        <div>
+          <div className={classes.addSubTopic} onClick={(e) => handleAddSubTopic(e, topicPosts[element][3]) }>+</div>
+          <div className={classes.deleteButton} onClick={ () => handleDelete(topicPosts[element][3])}>x</div>
+          <div className= {classes.labelText}>{topicPosts[element][3]}</div>
+        </div>
+        }
+      >
+      {sub ? subTopics : null }
+      {(clicked && subTopic == topicPosts[element][3]) ? 
+              (<TreeItem classes={{ label: classes['subtopic']}}
+              label={
+                <TextField
+                onKeyPress={(ev) => {
+                  if (ev.key === 'Enter') {
+                    addChildTopic(props.data, subTopicValue, topicPosts[element][3]);
+                    ev.preventDefault();
+                  }
+                }}
+                  fullWidth
+                  placeholder="new subtopic"
+                  className={classes.textField}
+                  value={subTopicValue}
+                  InputProps={{ classes: { input: classes.textField } }}
+                  onChange={handleSubChange}
+                />
+              }
+            />)
+              :
+              null
+      }
+      </TreeItem>
+      )
+    }  
+
+
+        // Display the tree we made above.
+        return (
+          <div className={classes.root}>
+          <TreeView
+          className={classes.root}
+          disableSelection
+          //defaultCollapseIcon={<ExpandMoreIcon />}
+          //defaultExpanded={['root']}
+          //defaultExpandIcon={<ChevronRightIcon />}
+          >
+          {topicItems}
+
+          
+          <TreeItem classes={{ label: classes['addButton']}}
+            label={
+              <TextField
+              onKeyPress={(ev) => {
+                if (ev.key === 'Enter') {
+                  addTopic(props.data, value);
+                  ev.preventDefault();
+                }
+              }}
+                fullWidth
+                placeholder="new topic"
+                className={classes.textField}
+                value={value}
+                InputProps={{ classes: { input: classes.textField } }}
+                onChange={handleChange}
+              />
+            }
+          />
+          </TreeView>
+          </div>
+          );
+          
+          
+}
+
+export default TopicsTree   

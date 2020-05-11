@@ -79,12 +79,6 @@ const useStyles = makeStyles({
 
 });
 
-
-
-
-// add specific highlight code here maybe?!?
-
-
 export default function Concept() {
     const [loading, setLoading] = useState(true);
     const [entryExists, setEntryExists] = useState(false);
@@ -117,7 +111,6 @@ export default function Concept() {
             setLoading(false);
         });
       }
-    //TODO: EMPTY CASE
     if(entryExists) {
         return(
             <div className={classes.root}>
@@ -134,9 +127,7 @@ export default function Concept() {
         return <h1> loading.... </h1>
     }
 
-    console.log("blogposts is now" + blogPosts)
     // inject the blogposts into our html via blogposts array
-    console.log(blogPosts)
     const blogposts = []
     blogPosts.forEach(element => blogposts.push(
         <div>
@@ -157,11 +148,6 @@ export default function Concept() {
             <PopUpForm className={classes.addButton}/>
             </div>
             </div>
-
-
-
-
-
         </div>
       );
     };

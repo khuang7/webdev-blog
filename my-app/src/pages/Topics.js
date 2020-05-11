@@ -5,7 +5,7 @@ import NavBar from '../components/NavBar'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      backgroundColor: '#98756F',
+      backgroundColor: '#D8DCD6',
       minHeight: '100vh'
     },
 
@@ -43,25 +43,16 @@ const useStyles = makeStyles((theme) => ({
       },
 }));
 
-
-
-
-
-
 export default function Topics() {
     const classes = useStyles();
     return (
         <div className={classes.root}>
-            <NavBar/>
-           
+            <NavBar/>       
             <div className = {classes.centerContainer}>
-            <Typography className={classes.title} > <p>some interesting topics </p></Typography>
+            <Typography className={classes.title} > <p>the more you know ... </p></Typography>
             <TopicsTree data={'htmldata'}/>
-        
             <TopicsTree data={'cssdata'}/>
-
             <TopicsTree data={'jsdata'}/>
-            
             </div>
         </div>
     )
