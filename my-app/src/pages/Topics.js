@@ -1,7 +1,8 @@
-import React from 'react';
+import React,  { useState } from 'react';
 import { makeStyles, Typography } from '@material-ui/core/';
 import TopicsTree from '../components/TopicsTree'
 import NavBar from '../components/NavBar'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
       },
 
     title: {
-        fontSize: '25px',
+        fontSize: '20px',
         color: 'black',
         fontFamily: 'monospace'
                
@@ -45,15 +46,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Topics() {
     const classes = useStyles();
+
+
+
     return (
+      
         <div className={classes.root}>
-            <NavBar/>       
+            <NavBar/>
             <div className = {classes.centerContainer}>
             <Typography className={classes.title} > <p>the more you know ... </p></Typography>
-            <TopicsTree data={'htmldata'}/>
-            <TopicsTree data={'cssdata'}/>
-            <TopicsTree data={'jsdata'}/>
+            <TopicsTree editMode={true} data={'htmldata'}/>
+            <TopicsTree editMode={true} data={'cssdata'}/>
+            <TopicsTree editMode={true} data={'jsdata'}/>
             </div>
         </div>
     )
 }
+
+/*
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [loginEmail, setLoginEmail] = useState("")
+  
+    const setLogin = (childData) => {
+      setLoginEmail(childData)
+      if (childData == "khuang771@gmail.com") {
+        setLoggedIn(true)
+      } else {
+        setLoggedIn(false)
+      }
+    }
+
+<NavBar parentCallBack={setLogin}/>
+  */

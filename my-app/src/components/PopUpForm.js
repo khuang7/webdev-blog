@@ -23,7 +23,8 @@ const useStyles = makeStyles({
 
     },
     dialogModal: {
-        width: '80%'
+        width: '600px',
+        minWidth: ' 500px'
     },
     buttonColor: {
         color: 'black'
@@ -33,9 +34,8 @@ const useStyles = makeStyles({
       width: '100%'
 
     } 
-
-
 });
+
 
 function addToDB(param, value, radioValue) {
   const dbRef = getFirebase().database().ref()
@@ -45,9 +45,6 @@ function addToDB(param, value, radioValue) {
       "type": radioValue
   })
 }
-
-
-
 
 export default function FormDialog(props) {
   const classes = useStyles();
@@ -80,17 +77,12 @@ export default function FormDialog(props) {
       handleClose()
       window.location.reload();
     } else {
+
     }
   };
 
-
-
-
-
-
   return (
     <div className={classes.root}>
-
     <Icon onClick={handleClickOpen} className={classes.icon}>add_circle </Icon>
     <Dialog className={classes.dialog} open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
     <DialogTitle id="form-dialog-title">Enter Post</DialogTitle>
@@ -131,5 +123,4 @@ export default function FormDialog(props) {
     </div>
   );
 }
-
 

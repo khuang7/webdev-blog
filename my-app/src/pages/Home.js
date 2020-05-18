@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NavBar from '../components/NavBar';
 import { makeStyles, Typography, List, ListItem, ListItemText, Button } from '@material-ui/core/';
 import { Link } from 'react-router-dom';
@@ -11,10 +11,11 @@ const data = {
         ]
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     backgroundColor: '#EFEFEF',
-    minHeight: '100vh'
+    minHeight: '100vh',
+    paddingBottom: '50px'
   },
 
   '@keyframes blinker': {
@@ -75,7 +76,6 @@ const useStyles = makeStyles((theme) => ({
     borderColor: 'black',
     marginRight: '5px',
     marginLeft: '5px'
-
   }
 }));
 
@@ -84,9 +84,12 @@ export default function Home() {
   const stepsTaken = data.steps.map(list =>
     <ListItemText className = {classes.listItems} primary={list}> </ListItemText>
   )
+
+
+
   return (
     <div className={classes.root}>
-      <NavBar/>
+      <NavBar parentCallBack = {null} />
         <div className = {classes.centerContainer}>
         <Typography className={classes.title} > just a web development blog.</Typography>
         <Typography className={classes.thePlan}> the plan: </Typography>

@@ -5,6 +5,9 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import Routes from './Routes'
 
+
+
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -22,8 +25,7 @@ const theme = createMuiTheme({
     fontFamily: [
       'monospace'
   ]
-  }
-  
+  }  
 });
 
 

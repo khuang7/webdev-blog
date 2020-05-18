@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -8,7 +8,13 @@ import { Link } from 'react-router-dom';
 import { v1 as uuidv1 } from 'uuid';
 import TextField from '@material-ui/core/TextField';
 
+
 import { getFirebase } from "../firebase";
+import withFirebaseAuth from 'react-with-firebase-auth'
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import { store } from '../store.js';
+
 
 const useStyles = makeStyles({
     root: {
@@ -22,7 +28,7 @@ const useStyles = makeStyles({
       color: 'black'
     },
     content: {
-        fontSize: '50px'
+        fontSize: '20px'
     },
     label: {
       backgroundColor: 'transparent',
@@ -51,7 +57,7 @@ const useStyles = makeStyles({
     sublabel: {
       backgroundColor: '#FCC006',
       textAlign: 'center',
-      fontSize: '15px',
+      fontSize: '20px',
       color: 'black',
       border: '1px solid transparent',
   
@@ -66,13 +72,14 @@ const useStyles = makeStyles({
     },
   
     subtopic: {
-      backgroundColor: 'white',
+      backgroundColor: '#D8DCD6',
       textAlign: 'center'
     },
   
     labelTitle: {
       backgroundColor: '#D8DCD6!important',
-      fontSize: '30px',
+      fontSize: '20px',
+      //textShadow: '2px 2px',
       textAlign: 'center',
       color: 'black',
       borderColor: 'black',
@@ -98,8 +105,9 @@ const useStyles = makeStyles({
     textField: {
       textAlign: 'center',
       fontSize: '15px' ,
-      textDecoration: 'none'
-  
+      textDecoration: 'none',
+
+      
     },
     labelRoot: {
       textAlign: 'center',
@@ -146,6 +154,10 @@ function addTopic(title, value) {
   function deleteSubTopic(title ,element, subelement) {
     var dbRef = getFirebase().database().ref()
     dbRef.child(title).child(element).child('children').child(subelement).remove()
+
+    // also remove the actual post if somethign has already been made
+    dbRef.child('posts').child(subelement).remove()
+
     window.location.reload();
   }
   
@@ -167,6 +179,10 @@ const TopicsTree = (props) => {
   const [clicked, setClicked] = useState(false);
   const [subTopic, setSubTopic] = useState("");
   const [subTopicValue, setSubTopicValue] = useState("")
+
+  // LOGIN STUFF
+  const globalState = useContext(store);
+  var editMode = globalState.state.loggedIn
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -190,9 +206,6 @@ const TopicsTree = (props) => {
     deleteSubTopic(props.data, element, subelement)
   }
 
-
-
-
   if (loading && !topicPosts.length) {
     dbRef.child(props.data)
     .orderByChild('id')
@@ -212,9 +225,6 @@ const TopicsTree = (props) => {
   if (loading) {
     return <h1> loading.... </h1>
 }
-//<Link to={"/concept/" + nodes.name} style={{ textDecoration: 'none', color: 'black' }} > 
-// </Link>
-
 
     // 1 Pushing the HEADER
     const topicItems = [];
@@ -237,22 +247,23 @@ const TopicsTree = (props) => {
       if (sub) {
         for (let subelement in sub) { 
           subTopics.push (
+            <Link to={"/concept/" + subelement} style={{ textDecoration: 'none', color: 'black' }} > 
             <TreeItem classes={{ label: classes['sublabel']}}
             key='1'
             nodeId='1'
             label={
               <div>
+                {editMode ?  
                 <div className={classes.deleteButton} onClick={ () => handleSubDelete(topicPosts[element][3], subelement)}>x</div>
+                :null
+                }
                 <div className= {classes.labelText}> {subelement}</div>
               </div>
-              
               }
-            />
+            /> </Link>
           )
         }
       }
-
-
     // PUT EVERYTHING INTO THE TOPICITEMS Array (Topics + subtopics)
     topicItems.push(
         
@@ -262,14 +273,20 @@ const TopicsTree = (props) => {
         nodeId={topicPosts[element][0]} 
         label={
         <div>
-          <div className={classes.addSubTopic} onClick={(e) => handleAddSubTopic(e, topicPosts[element][3]) }>+</div>
-          <div className={classes.deleteButton} onClick={ () => handleDelete(topicPosts[element][3])}>x</div>
+        {editMode ?  
+        <React.Fragment>
+        <div className={classes.addSubTopic} onClick={(e) => handleAddSubTopic(e, topicPosts[element][3]) }> + </div>
+        <div className={classes.deleteButton} onClick={ () => handleDelete(topicPosts[element][3])}> x </div>
+        </React.Fragment>
+        : null
+        }
+          
           <div className= {classes.labelText}>{topicPosts[element][3]}</div>
         </div>
         }
       >
       {sub ? subTopics : null }
-      {(clicked && subTopic == topicPosts[element][3]) ? 
+      {(clicked && subTopic == topicPosts[element][3] && editMode) ? 
               (<TreeItem classes={{ label: classes['subtopic']}}
               label={
                 <TextField
@@ -283,7 +300,7 @@ const TopicsTree = (props) => {
                   placeholder="new subtopic"
                   className={classes.textField}
                   value={subTopicValue}
-                  InputProps={{ classes: { input: classes.textField } }}
+                  InputProps={{ classes: { input: classes.textField}, disableUnderline:true }    }
                   onChange={handleSubChange}
                 />
               }
@@ -307,8 +324,7 @@ const TopicsTree = (props) => {
           //defaultExpandIcon={<ChevronRightIcon />}
           >
           {topicItems}
-
-          
+          {editMode ?  
           <TreeItem classes={{ label: classes['addButton']}}
             label={
               <TextField
@@ -322,11 +338,12 @@ const TopicsTree = (props) => {
                 placeholder="new topic"
                 className={classes.textField}
                 value={value}
-                InputProps={{ classes: { input: classes.textField } }}
+                InputProps={{ classes: { input: classes.textField}, disableUnderline:true }    }
                 onChange={handleChange}
               />
             }
           />
+          : null }
           </TreeView>
           </div>
           );
