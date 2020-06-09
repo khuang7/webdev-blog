@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NavBar from '../components/NavBar';
 import { makeStyles, Typography, List, ListItem, ListItemText, Button } from '@material-ui/core/';
 import { Link } from 'react-router-dom';
@@ -11,9 +11,9 @@ const data = {
         ]
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: '#EFEFEF',
+    backgroundColor: '#F0EAD6',
     minHeight: '100vh',
     paddingBottom: '50px'
   },

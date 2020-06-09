@@ -45,11 +45,11 @@ const NavBar = (props) => {
     } = props;
 
 
-    if (globalState.state.loggedIn == false && user && user.email == "khuang771@gmail.com") {
+    if (globalState.state.loggedIn === false && user && user.email === "khuang771@gmail.com") {
       dispatch({ type: 'logged in' })
     }
 
-    if (globalState.state.loggedIn == true && !user) {
+    if (globalState.state.loggedIn === true && !user) {
       dispatch({ type: 'logged out' })
     }
 

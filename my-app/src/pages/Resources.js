@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NavBar from '../components/NavBar';
-import { Link } from 'react-router-dom';
+
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(() => ({
     root: {
-      backgroundColor: '#EFEFEF',
-      minHeight: '100vh',
-      paddingBottom: '50px'
+        backgroundColor: '#D8DCD6',
+        minHeight: '100vh'
     }
 }));
 
@@ -16,9 +15,8 @@ export default function Resources() {
 
     return (
     <div className={classes.root}>
+        <NavBar/>
     <h1> RESOURCES PAGE</h1>
     </div>
     )
-
-
 }

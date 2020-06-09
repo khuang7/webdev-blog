@@ -24,8 +24,7 @@ const StyledTableCell = styled(TableCell) ({
   });
 
 
-export class Table extends Component {
-    render() {
+export function TableComp () {
         return (
             <div>
             <TableContainer className={classes.TableCell}>
@@ -58,7 +57,4 @@ export class Table extends Component {
             </TableContainer>
             </div>
         )
-    }
 }
-
-export default Table
